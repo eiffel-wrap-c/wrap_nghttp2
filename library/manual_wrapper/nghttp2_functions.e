@@ -107,11 +107,13 @@ feature {NONE} -- C externals
 			"C inline use <nghttp2.h>"
 		alias
 			"[
+				nghttp2_nv *arr = (nghttp2_nv*)malloc(sizeof(nghttp2_nv) * $nvlen);
+				memcpy(arr, $nva, sizeof(nghttp2_nv) * $nvlen);
 				nghttp2_nv *lnva = (nghttp2_nv *)malloc(sizeof(nghttp2_nv) * $nvlen);
 				for (int i =0; i < $nvlen; i++) {
-					//printf ("Name %s\n", (*(nghttp2_nv **)($nva + sizeof(nghttp2_nv)*i ))->name);
-					//printf ("Len %d\n", (*(nghttp2_nv **)($nva +  sizeof(nghttp2_nv)*i ))->namelen);
-					lnva[i] = *(*(nghttp2_nv **)($nva + sizeof(nghttp2_nv)*i ));
+					 //printf ("Len %s\n", (*(nghttp2_nv **)(arr + i ))->name);
+					 //printf ("Len %d\n", (*(nghttp2_nv **)(arr + i ))->namelen);
+					 lnva[i] = *(*(nghttp2_nv **)(arr + i ));
 				}
 				return nghttp2_hd_deflate_bound ((nghttp2_hd_deflater*)$deflater, (const nghttp2_nv *)lnva, (size_t)$nvlen);
 			]"
@@ -122,9 +124,11 @@ feature {NONE} -- C externals
 			"C inline use <nghttp2.h>"
 		alias
 			"[
+				nghttp2_nv* arr = (nghttp2_nv**)malloc(sizeof(nghttp2_nv) * $nvlen);
+				memcpy(arr, $nva, sizeof(nghttp2_nv) * $nvlen);
 				nghttp2_nv *lnva = (nghttp2_nv *)malloc(sizeof(nghttp2_nv) * $nvlen);
 				for (int i =0; i < $nvlen; i++) {
-					lnva[i] = *(*(nghttp2_nv **)($nva + sizeof(nghttp2_nv)*i ));
+					lnva[i] = *(*(nghttp2_nv **)(arr + i ));
 				}
 					
 				return nghttp2_hd_deflate_hd ((nghttp2_hd_deflater*)$deflater, (uint8_t*)$buf, (size_t)$buflen, (const nghttp2_nv *)lnva, (size_t)$nvlen);

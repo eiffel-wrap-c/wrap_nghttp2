@@ -1,7 +1,7 @@
 @echo on
 title post_process script
 cd generated_wrapper/eiffel
-rd /s /q nghttp2_nv_struct_api.e
+del /f nghttp2_nv_struct_api.e
 
 cd ..
 cd ..

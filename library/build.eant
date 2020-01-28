@@ -18,7 +18,7 @@
 	<target name="init_wrap_c">
 		<set name="system_dir" value="${cwd}"/>
 		<set name="wrap_c.library_name" value="libnghttp2"/>
-		<set name="wrap_c.full_header_name" value="${cwd}${path_separator}C${path_separator}includes${path_separator}nghttp2.h" if="${is_windows}"/>
+		<set name="wrap_c.full_header_name" value="${cwd}${path_separator}C${path_separator}include${path_separator}nghttp2.h" if="${is_windows}"/>
 		<set name="wrap_c.full_header_name" value="/usr/local/include/nghttp2/nghttp2.h" unless="${GOBO_OS}=windows"/> <!--pkg-config cflags libnghttp2-->
 		<set name="wrap_c.use_config_file" value="True"/>
 		<set name="wrap_c.verbose" value="--verbose"/> 
@@ -29,20 +29,26 @@
    		 <description>
      		 Generate wrapper files
     		</description>
+			<set name="wrap_c.options" value="" unless="${GOBO_OS}=windows"/>
+			<set name="wrap_c.options" value="-Dssize_t=long" if="${is_windows}"/>	
+	
 	    	<set name="wrap_c.config_file_option" value=""/>
 	    	<set name="wrap_c.config_file_option" value="--config=config.xml" if="${wrap_c.use_config_file}=True"/>	
-	    	<exec executable="wrap_c ${wrap_c.verbose} --output-dir=${wrap_c.wrapper_dir} --full-header=${wrap_c.full_header_name} ${wrap_c.config_file_option}"/>
+	    	<exec executable="wrap_c ${wrap_c.verbose} --c_compile_options=${wrap_c.options} --output-dir=${wrap_c.wrapper_dir} --full-header=${wrap_c.full_header_name} ${wrap_c.config_file_option}"/>
   	</target>
 
 	<target name="wrap_c_postprocess" depend="init_wrap_c">
-   		 <description>
+   		 <description> 
      		 Generate wrapper files
     		</description>
+    		<set name="wrap_c.options" value="" unless="${GOBO_OS}=windows"/>
+			<set name="wrap_c.options" value="-Dssize_t=long" if="${is_windows}"/>	
+
 	    	<set name="wrap_c.config_file_option" value=""/>
 	    	<set name="wrap_c.config_file_option" value="--config=config.xml" if="${wrap_c.use_config_file}=True"/>	
-		<set name="wrap_c.postprocess" value="post_script.sh" unless="${GOBO_OS}=windows"/>
-		<set name="wrap_c.postprocess" value="post_script.bat" if="${is_windows}"/>	
-	    	<exec executable="wrap_c ${wrap_c.verbose} --script_post_process=${wrap_c.postprocess} --output-dir=${wrap_c.wrapper_dir} --full-header=${wrap_c.full_header_name} ${wrap_c.config_file_option}"/>
+			<set name="wrap_c.postprocess" value="post_script.sh" unless="${GOBO_OS}=windows"/>
+			<set name="wrap_c.postprocess" value="post_script.bat" if="${is_windows}"/>	
+	    	<exec executable="wrap_c ${wrap_c.verbose} --c_compile_options=${wrap_c.options} --script_post_process=${wrap_c.postprocess} --output-dir=${wrap_c.wrapper_dir} --full-header=${wrap_c.full_header_name} ${wrap_c.config_file_option}"/>
   	</target>
 
 
