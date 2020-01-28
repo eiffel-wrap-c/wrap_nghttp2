@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+
+<project name="libnghttp2" default="help">
+
+	<description>
+		description: "Eiffel nghttp2 Library"
+	</description>
+
+	<target name="help">
+		<echo message="usage:"/>
+		<echo message=" geant wrap_c"/>
+		<echo message=" geant wrap_c_postprocess"/>
+		<echo message=" geant clean"/>
+		<echo message=" geant clobber"/>
+	</target>
+
+
+	<target name="init_wrap_c">
+		<set name="system_dir" value="${cwd}"/>
+		<set name="wrap_c.library_name" value="libnghttp2"/>
+		<set name="wrap_c.full_header_name" value="${cwd}${path_separator}C${path_separator}includes${path_separator}nghttp2.h" if="${is_windows}"/>
+		<set name="wrap_c.full_header_name" value="/usr/local/include/nghttp2/nghttp2.h" unless="${GOBO_OS}=windows"/> <!--pkg-config cflags libnghttp2-->
+		<set name="wrap_c.use_config_file" value="True"/>
+		<set name="wrap_c.verbose" value="--verbose"/> 
+		<set name="wrap_c.wrapper_dir" value="${system_dir}${path_separator}generated_wrapper"/>
+ 	</target>
+
+	<target name="wrap_c" depend="init_wrap_c">
+   		 <description>
+     		 Generate wrapper files
+    		</description>
+	    	<set name="wrap_c.config_file_option" value=""/>
+	    	<set name="wrap_c.config_file_option" value="--config=config.xml" if="${wrap_c.use_config_file}=True"/>	
+	    	<exec executable="wrap_c ${wrap_c.verbose} --output-dir=${wrap_c.wrapper_dir} --full-header=${wrap_c.full_header_name} ${wrap_c.config_file_option}"/>
+  	</target>
+
+	<target name="wrap_c_postprocess" depend="init_wrap_c">
+   		 <description>
+     		 Generate wrapper files
+    		</description>
+	    	<set name="wrap_c.config_file_option" value=""/>
+	    	<set name="wrap_c.config_file_option" value="--config=config.xml" if="${wrap_c.use_config_file}=True"/>	
+		<set name="wrap_c.postprocess" value="post_script.sh" unless="${GOBO_OS}=windows"/>
+		<set name="wrap_c.postprocess" value="post_script.bat" if="${is_windows}"/>	
+	    	<exec executable="wrap_c ${wrap_c.verbose} --script_post_process=${wrap_c.postprocess} --output-dir=${wrap_c.wrapper_dir} --full-header=${wrap_c.full_header_name} ${wrap_c.config_file_option}"/>
+  	</target>
+
+
+	<target name="clean">
+		<echo message="- Clean [EiffelNghttp2]" />
+		<delete directory="C/spec/${ISE_PLATFORM}" unless="${is_windows}"/>
+		<delete directory="C\spec\${ISE_C_COMPILER}\${ISE_PLATFORM}" if="${is_windows}" />
+		<delete directory="generated_wrapper"/>
+	</target>
+
+	<target name="compile" depend="init_wrap_c"> 
+		<geant file="${wrap_c.wrapper_dir}${path_separator}c${path_separator}src${path_separator}geant.eant" target="compile" dir="${wrap_c.wrapper_dir}${path_separator}c${path_separator}src"/>
+	</target>
+
+	<target name="clobber" depend="clean" />
+
+</project>
+
+
+

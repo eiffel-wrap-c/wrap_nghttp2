@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<ewg_config name="libnghttp2">
+
+  <rule_list>
+	  <!-- Ignore everything that starts with an underscore. -->
+    <rule>
+      <match>
+          <identifier name="_.*"/>  
+      </match>
+       <wrapper type="none">
+      </wrapper>
+    </rule>
+
+	<!-- Include nghttp2_hd_deflate funtions -->
+    <rule>
+       <match>
+           <identifier name="nghttp2_hd_deflate.*"/>
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule>
+
+	<!-- Include nghttp2_hd_inflate funtions -->
+    <rule>
+       <match>
+           <identifier name="nghttp2_hd_inflate.*"/>
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule>
+
+	<!-- Include nghttp2_strerror funtions -->
+    <rule>
+       <match>
+           <identifier name="nghttp2_strerror.*"/>
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule>
+
+	<!-- Include nghttp2_nv_flag enum -->
+    <rule>
+       <match>
+           <identifier name="nghttp2_nv_flag.*"/>
+	   <type name="enum"/>	
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule>
+
+
+
+	 <!-- And the rest should be ignored -->
+    <rule>
+      <match>
+      </match>
+       <wrapper type="none">
+      </wrapper>
+    </rule>
+
+
+
+  </rule_list>
+
+</ewg_config>
